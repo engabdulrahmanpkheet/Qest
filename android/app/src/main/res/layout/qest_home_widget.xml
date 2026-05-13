@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/qest_widget_bg">
+
+    <TextView
+        android:id="@+id/widget_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next payment"
+        android:textColor="#888888"
+        android:textSize="11sp"/>
+
+    <TextView
+        android:id="@+id/next_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textColor="#111111"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:text="—"/>
+
+    <TextView
+        android:id="@+id/next_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="#6E5BFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text=""/>
+
+    <TextView
+        android:id="@+id/next_due"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#666666"
+        android:textSize="12sp"
+        android:text=""/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/overdue_count"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textColor="#D03A3A"
+            android:textSize="11sp"
+            android:text="0 overdue"/>
+
+        <TextView
+            android:id="@+id/today_count"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textColor="#3A8A3A"
+            android:textSize="11sp"
+            android:text="0 today"/>
+    </LinearLayout>
+</LinearLayout>
