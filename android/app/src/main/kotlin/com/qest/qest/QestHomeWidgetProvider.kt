@@ -1,4 +1,4 @@
-package com.qest.app
+package com.qest.qest
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager

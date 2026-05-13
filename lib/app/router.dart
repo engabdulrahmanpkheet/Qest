@@ -34,7 +34,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: 'add',
-            builder: (_, __) => const AddEditInstallmentPage(),
+            builder: (ctx, state) => AddEditInstallmentPage(
+              presetId: state.uri.queryParameters['preset'],
+            ),
           ),
           GoRoute(
             path: 'edit/:uuid',

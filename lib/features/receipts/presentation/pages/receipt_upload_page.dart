@@ -133,13 +133,14 @@ class _ReceiptUploadPageState extends ConsumerState<ReceiptUploadPage> {
     if (r == null) return;
     final receiptRepo = ref.read(receiptRepositoryProvider);
     final iRepo = ref.read(installmentRepositoryProvider);
+    // 1. Persist receipt + attach to the just-paid installment.
     await receiptRepo.upsert(r);
     await iRepo.attachReceipt(widget.installmentUuid, r.uuid);
-    await iRepo.markPaid(widget.installmentUuid);
-    await ref
-        .read(notificationServiceProvider)
-        .cancelForInstallment(widget.installmentUuid);
-    await ref.read(homeWidgetServiceProvider).refresh(iRepo);
+    // 2. Mark paid + advance recurring (creates next month's row).
+    final current = await iRepo.getByUuid(widget.installmentUuid);
+    if (current != null) {
+      await ref.read(markPaidAndAdvanceProvider).call(current);
+    }
     if (mounted) context.pop();
   }
 }

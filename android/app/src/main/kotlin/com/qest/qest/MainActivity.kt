@@ -1,4 +1,4 @@
-package com.qest.app
+package com.qest.qest
 
 import io.flutter.embedding.android.FlutterActivity
 

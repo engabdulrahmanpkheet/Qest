@@ -6,8 +6,10 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/providers.dart';
 import '../../../../core/utils/money.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../installments/presentation/widgets/quick_pay_sheet.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/installment_tile.dart';
+import '../widgets/preset_picker.dart';
 import '../widgets/summary_card.dart';
 
 class DashboardPage extends ConsumerWidget {
@@ -21,10 +23,22 @@ class DashboardPage extends ConsumerWidget {
     final monthly = ref.watch(monthlyTotalProvider);
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/dashboard/add'),
-        icon: const Icon(Icons.add),
-        label: Text(l.addInstallment),
+      floatingActionButton: GestureDetector(
+        onLongPress: () => showModalBottomSheet<void>(
+          context: context,
+          showDragHandle: true,
+          builder: (_) => const SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child: PresetPicker(compact: true),
+            ),
+          ),
+        ),
+        child: FloatingActionButton.extended(
+          onPressed: () => context.push('/dashboard/add'),
+          icon: const Icon(Icons.add),
+          label: Text(l.addInstallment),
+        ),
       ),
       body: SafeArea(
         child: RefreshIndicator(
@@ -104,7 +118,14 @@ class DashboardPage extends ConsumerWidget {
                   ),
                 ),
               ),
-              _list(context, ref, upcomingAsync, emptyEmoji: '🌤', emptyText: l.noUpcoming),
+              _list(
+                context,
+                ref,
+                upcomingAsync,
+                emptyEmoji: '🌤',
+                emptyText: l.noUpcoming,
+                emptyBuilder: () => const PresetPicker(),
+              ),
               const SliverToBoxAdapter(child: SizedBox(height: 96)),
             ],
           ),
@@ -119,12 +140,14 @@ class DashboardPage extends ConsumerWidget {
     AsyncValue list, {
     required String emptyEmoji,
     required String emptyText,
+    Widget Function()? emptyBuilder,
   }) {
     return list.when(
       data: (items) {
         if (items.isEmpty) {
           return SliverToBoxAdapter(
-            child: EmptyState(emoji: emptyEmoji, message: emptyText),
+            child: emptyBuilder?.call() ??
+                EmptyState(emoji: emptyEmoji, message: emptyText),
           );
         }
         return SliverPadding(
@@ -136,6 +159,8 @@ class DashboardPage extends ConsumerWidget {
               installment: items[i],
               onTap: () =>
                   context.push('/dashboard/detail/${items[i].uuid}'),
+              onLongPress: () =>
+                  QuickPaySheet.show(context, ref, items[i]),
             ).animate().fadeIn(delay: (i * 30).ms).slideY(begin: 0.05),
           ),
         );

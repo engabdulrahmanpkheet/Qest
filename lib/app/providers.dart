@@ -14,6 +14,7 @@ import '../core/services/widgets/home_widget_service.dart';
 import '../features/installments/data/repositories/installment_repository_impl.dart';
 import '../features/installments/domain/entities/installment.dart';
 import '../features/installments/domain/repositories/installment_repository.dart';
+import '../features/installments/domain/usecases/mark_paid_and_advance.dart';
 import '../features/receipts/data/repositories/receipt_repository_impl.dart';
 import '../features/receipts/domain/repositories/receipt_repository.dart';
 
@@ -58,6 +59,14 @@ final installmentRepositoryProvider = Provider<InstallmentRepository>(
 final receiptRepositoryProvider = Provider<ReceiptRepository>(
   (ref) => ReceiptRepositoryImpl(ref.watch(isarServiceProvider)),
 );
+
+final markPaidAndAdvanceProvider = Provider<MarkPaidAndAdvance>((ref) {
+  return MarkPaidAndAdvance(
+    repository: ref.watch(installmentRepositoryProvider),
+    notifications: ref.watch(notificationServiceProvider),
+    widgets: ref.watch(homeWidgetServiceProvider),
+  );
+});
 
 // ---- Streams / data ------------------------------------------------------
 

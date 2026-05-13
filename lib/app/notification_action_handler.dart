@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/constants/app_constants.dart';
 import '../core/services/notifications/notification_service.dart';
-import '../features/installments/domain/entities/installment.dart';
 import 'providers.dart';
 
 /// Subscribes to the [NotificationService] event stream and applies the
@@ -32,7 +31,7 @@ class NotificationActionHandler {
 
     switch (e.actionId) {
       case AppConstants.actionPaid:
-        await _markPaid(i);
+        await _ref.read(markPaidAndAdvanceProvider).call(i);
         break;
       case AppConstants.actionOpenApp:
         await _ref.read(paymentLauncherProvider).launch(
@@ -48,14 +47,6 @@ class NotificationActionHandler {
     }
   }
 
-  Future<void> _markPaid(Installment i) async {
-    final repo = _ref.read(installmentRepositoryProvider);
-    await repo.markPaid(i.uuid);
-    await _ref
-        .read(notificationServiceProvider)
-        .cancelForInstallment(i.uuid);
-    await _ref.read(homeWidgetServiceProvider).refresh(repo);
-  }
 }
 
 final notificationActionHandlerProvider =

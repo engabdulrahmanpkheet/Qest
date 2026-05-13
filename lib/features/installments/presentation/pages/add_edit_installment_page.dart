@@ -6,12 +6,14 @@ import 'package:uuid/uuid.dart';
 import '../../../../app/providers.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/installment.dart';
+import '../../domain/entities/installment_preset.dart';
 import '../../domain/entities/payment_app.dart';
 import '../../domain/entities/recurring_type.dart';
 
 class AddEditInstallmentPage extends ConsumerStatefulWidget {
-  const AddEditInstallmentPage({super.key, this.uuid});
+  const AddEditInstallmentPage({super.key, this.uuid, this.presetId});
   final String? uuid;
+  final String? presetId;
 
   @override
   ConsumerState<AddEditInstallmentPage> createState() =>
@@ -38,8 +40,23 @@ class _AddEditInstallmentPageState
     if (widget.uuid != null) {
       Future.microtask(_load);
     } else {
+      _applyPreset();
       _loaded = true;
     }
+  }
+
+  void _applyPreset() {
+    final id = widget.presetId;
+    if (id == null) return;
+    final preset = InstallmentPreset.defaults.firstWhere(
+      (p) => p.id == id,
+      orElse: () => InstallmentPreset.defaults.first,
+    );
+    final locale =
+        WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+    _title.text = preset.titleFor(locale);
+    _recurring = preset.recurring;
+    _app = preset.paymentApp;
   }
 
   Future<void> _load() async {

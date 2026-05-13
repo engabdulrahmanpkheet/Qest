@@ -169,12 +169,7 @@ class _ActionButtons extends ConsumerWidget {
             icon: const Icon(Icons.check_rounded),
             label: Text(l.yesPaid),
             onPressed: () async {
-              final repo = ref.read(installmentRepositoryProvider);
-              await repo.markPaid(installment.uuid);
-              await ref
-                  .read(notificationServiceProvider)
-                  .cancelForInstallment(installment.uuid);
-              await ref.read(homeWidgetServiceProvider).refresh(repo);
+              await ref.read(markPaidAndAdvanceProvider).call(installment);
               onChange();
             },
           ),
